@@ -1,0 +1,19 @@
+# Dependencias para el Backend en Python - Veterinaria Huellitas
+# Mapeo ORM y Conector de Base de Datos
+sqlalchemy>=2.0.0
+pymysql>=1.1.0
+cryptography>=41.0.0
+
+# Validación y DTOs
+pydantic>=2.0.0
+
+# Framework Web (Compatible con FastAPI / Flask)
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+
+# Seguridad y Autenticación (JWT y Hash de contraseñas)
+passlib[bcrypt]>=1.7.4
+bcrypt>=4.0.0
+python-jose[cryptography]>=3.3.0
+python-dotenv>=1.0.0
+

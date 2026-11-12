@@ -1,23 +1,41 @@
-"""
-Script de verificación y prueba de los modelos del backend de Veterinaria Huellitas.
-Prueba la instanciación, asignación de atributos, serialización a diccionario y relaciones.
-"""
+
+import sys
+from pathlib import Path
+
+backend_dir = Path(__file__).resolve().parent
+repo_dir = backend_dir.parent
+for p in [str(repo_dir), str(backend_dir)]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
 from datetime import date, datetime
 from decimal import Decimal
 
-# Importar modelos
-from modelo import (
-    Base,
-    EstadoReserva,
-    Rol,
-    Usuario,
-    Mascota,
-    Servicio,
-    Reserva,
-    Atencion,
-    SQLALCHEMY_INSTALLED,
-)
+try:
+    from model import (
+        Base,
+        EstadoReserva,
+        Rol,
+        Usuario,
+        Mascota,
+        Servicio,
+        Reserva,
+        Atencion,
+        SQLALCHEMY_INSTALLED,
+    )
+except ImportError:
+    from backend.model import (
+        Base,
+        EstadoReserva,
+        Rol,
+        Usuario,
+        Mascota,
+        Servicio,
+        Reserva,
+        Atencion,
+        SQLALCHEMY_INSTALLED,
+    )
+
 
 
 def ejecutar_pruebas():

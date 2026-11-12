@@ -1,6 +1,3 @@
-"""
-Paquete de Seguridad y Autenticación JWT - Veterinaria Huellitas
-"""
 
 from .jwt_service import JwtService
 from .user_details import UserDetails
@@ -23,3 +20,4 @@ __all__ = [
     "requerir_admin",
     "requerir_cliente",
 ]
+

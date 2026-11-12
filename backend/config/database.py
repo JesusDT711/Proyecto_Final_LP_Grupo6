@@ -1,7 +1,3 @@
-"""
-Configuración de la conexión a Base de Datos relacional MySQL con SQLAlchemy.
-Provee engine, sessionmaker y generador de sesiones get_db().
-"""
 
 from typing import Any, Generator, Optional
 from .settings import settings
@@ -17,16 +13,11 @@ except ImportError:
     Session = Any
 
 
-# Variable para almacenar el engine activo
 _engine = None
 _SessionLocal = None
 
 
 def get_engine(use_sqlite_fallback: bool = False):
-    """
-    Crea o recupera el engine de SQLAlchemy.
-    Permite alternar entre MySQL (por defecto) o SQLite para testing local.
-    """
     global _engine, _SessionLocal
     if not SQLALCHEMY_AVAILABLE:
         return None
@@ -44,7 +35,6 @@ def get_engine(use_sqlite_fallback: bool = False):
             )
             _SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=_engine)
         except Exception as e:
-            # Si falla la conexión a MySQL en desarrollo, fallback seguro a SQLite
             if not use_sqlite_fallback:
                 return get_engine(use_sqlite_fallback=True)
             raise e
@@ -53,7 +43,6 @@ def get_engine(use_sqlite_fallback: bool = False):
 
 
 def get_session_factory():
-    """Retorna la fábrica de sesiones SessionLocal."""
     global _SessionLocal
     if _SessionLocal is None:
         get_engine()
@@ -61,10 +50,6 @@ def get_session_factory():
 
 
 def get_db() -> Generator[Any, None, None]:
-    """
-    Generador de sesión de base de datos para inyección de dependencias
-    (compatible con FastAPI Depends(get_db) o bloques with).
-    """
     factory = get_session_factory()
     if factory is None:
         yield None
@@ -78,9 +63,6 @@ def get_db() -> Generator[Any, None, None]:
 
 
 def init_db(engine=None):
-    """
-    Inicializa las tablas de la base de datos a partir de los modelos declarativos de SQLAlchemy.
-    """
     if not SQLALCHEMY_AVAILABLE:
         return False
 
@@ -97,3 +79,4 @@ def init_db(engine=None):
         Base.metadata.create_all(bind=eng)
         return True
     return False
+

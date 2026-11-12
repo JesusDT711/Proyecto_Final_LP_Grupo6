@@ -1,12 +1,7 @@
-"""
-Paquete backend del sistema Veterinaria Huellitas.
-Permite importar los módulos directamente (ej: from backend.model import Usuario).
-"""
 
 import os
 import sys
 
-# Agrega backend y su directorio contenedor a sys.path automáticamente
 _backend_dir = os.path.dirname(os.path.abspath(__file__))
 _parent_dir = os.path.dirname(_backend_dir)
 

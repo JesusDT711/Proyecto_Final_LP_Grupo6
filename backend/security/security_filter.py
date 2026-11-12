@@ -66,3 +66,4 @@ class SecurityFilter:
             nombre_completo=payload.get("nombreCompleto") or payload.get("nombre_completo", ""),
             rol=payload.get("rol", "CLIENTE"),
         )
+

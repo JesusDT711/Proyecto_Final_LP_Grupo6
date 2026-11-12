@@ -1,6 +1,3 @@
-"""
-Paquete de Configuración - Veterinaria Huellitas
-"""
 
 from .settings import Settings, settings
 from .database import (
@@ -20,3 +17,4 @@ __all__ = [
     "get_db",
     "init_db",
 ]
+

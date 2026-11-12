@@ -14,7 +14,17 @@ for _ruta in [_backend_dir, _parent_dir]:
     if _ruta not in sys.path:
         sys.path.insert(0, _ruta)
 
-from . import controller, dto, exception, model, repository, service, util
+from . import config, controller, dto, exception, model, repository, security, service, util
 
-__all__ = ["model", "repository", "service", "dto", "controller", "exception", "util"]
+__all__ = [
+    "config",
+    "model",
+    "repository",
+    "service",
+    "dto",
+    "controller",
+    "security",
+    "exception",
+    "util",
+]
 

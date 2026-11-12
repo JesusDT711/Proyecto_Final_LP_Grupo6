@@ -49,6 +49,15 @@ backend/
 │   ├── usuario_admin_controller.py
 │   ├── mascota_controller.py
 │   └── atencion_controller.py
+├── config/               # Configuración global y base de datos
+│   ├── settings.py
+│   └── database.py
+├── security/             # Seguridad, filtros y autenticación JWT
+│   ├── jwt_service.py
+│   ├── user_details.py
+│   ├── user_details_service.py
+│   ├── security_filter.py
+│   └── security_config.py
 ├── exception/            # Excepciones de negocio personalizadas
 │   └── api_exception.py
 ├── util/                 # Utilidades (normalización de email, hash de claves, JWT)
@@ -57,7 +66,8 @@ backend/
 ├── requirements.txt      # Dependencias del backend
 ├── verificar_modelos.py  # Test de entidades
 ├── verificar_servicios.py # Test de repositorios y lógica de negocio
-└── verificar_controllers.py # Test de DTOs y controladores REST
+├── verificar_controllers.py # Test de DTOs y controladores REST
+└── verificar_security_config.py # Test de configuración y seguridad JWT
 ```
 
 ---
@@ -95,6 +105,31 @@ Implementa los endpoints de la API devolviendo objetos `ApiResponse` que encapsu
 
 ---
 
+## 3. Módulo `config/` (Configuración y Base de Datos)
+
+Centraliza los parámetros del sistema y la conectividad a base de datos relacional:
+
+| Componente | Archivo | Propósito |
+|---|---|---|
+| `Settings` | [`settings.py`](config/settings.py) | Variables de entorno (puerto, BD MySQL, secret JWT, expiración, zona horaria `America/Lima`, horario laboral 09:00 - 21:00). |
+| `Database` | [`database.py`](config/database.py) | Engine SQLAlchemy, `sessionmaker`, inicializador de tablas `init_db()` y generador `get_db()` para inyección de dependencias. |
+
+---
+
+## 4. Módulo `security/` (Seguridad y Control de Acceso)
+
+Equivalente al módulo de Spring Security del proyecto de referencia en Java:
+
+| Componente | Archivo | Equivalente en Java | Propósito |
+|---|---|---|---|
+| `JwtService` | [`jwt_service.py`](security/jwt_service.py) | `JwtService.java` | Generación, firma HMAC-SHA256 y validación de tokens JWT. |
+| `UserDetails` | [`user_details.py`](security/user_details.py) | `UserDetails.java` | Principal de usuario autenticado (`email`, `rol`, `es_admin()`, `es_cliente()`). |
+| `UserDetailsService` | [`user_details_service.py`](security/user_details_service.py) | `UserDetailsService.java` | Carga el principal desde la base de datos a partir del email. |
+| `SecurityFilter` | [`security_filter.py`](security/security_filter.py) | `JwtAuthenticationFilter.java` | Intercepta cabeceras `Authorization: Bearer <token>` y autentica el contexto. |
+| `SecurityConfig` | [`security_config.py`](security/security_config.py) | `SecurityConfig.java` | Reglas de autorización por ruta (401 / 403) y decoradores `@requerir_admin`, `@requerir_cliente`. |
+
+---
+
 ## Ejecución de Pruebas
 
 Para validar los modelos:
@@ -110,4 +145,9 @@ python verificar_servicios.py
 Para validar los controladores y el flujo completo de peticiones REST:
 ```bash
 python verificar_controllers.py
+```
+
+Para validar la seguridad, tokens JWT y filtros de autorización:
+```bash
+python verificar_security_config.py
 ```

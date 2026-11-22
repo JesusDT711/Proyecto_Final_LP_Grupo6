@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Admin from "./Admin";
 import "./App.css";
 
-const API = "http://localhost:8000/api";
+const API = (import.meta.env.VITE_API_URL || "http://localhost:8000/api").replace(/\/$/, "");
 const IMG = { hero: "/img/hero.png", gato: "/img/gato.png", perro: "/img/perro.png", ave: "/img/ave.png", servicios: "/img/servicios.png" };
 const mascotas = [["Gatos", IMG.gato], ["Perros", IMG.perro], ["Aves", IMG.ave]];
 // Datos fijos: el backend aún no tiene tabla de doctores

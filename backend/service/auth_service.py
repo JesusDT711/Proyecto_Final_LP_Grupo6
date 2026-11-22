@@ -7,6 +7,7 @@ try:
     from repository.usuario_repository import UsuarioRepository
     from util.email_util import EmailUtil
     from util.seguridad_util import SeguridadUtil
+    from security.jwt_service import JwtService
 except ImportError:
     from backend.exception.api_exception import ApiException
     from backend.model.usuario import Usuario
@@ -14,6 +15,7 @@ except ImportError:
     from backend.repository.usuario_repository import UsuarioRepository
     from backend.util.email_util import EmailUtil
     from backend.util.seguridad_util import SeguridadUtil
+    from backend.security.jwt_service import JwtService
 
 
 class AuthService:
@@ -73,7 +75,7 @@ class AuthService:
             raise ApiException(401, "Correo o contraseña incorrectos")
 
         rol_nombre = usuario.rol.nombre if usuario.rol else "CLIENTE"
-        token = SeguridadUtil.generar_token(
+        token = JwtService().generar_token(
             email=usuario.email,
             rol=rol_nombre,
             nombre_completo=usuario.nombre_completo,

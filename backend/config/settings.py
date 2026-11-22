@@ -1,13 +1,16 @@
-
 import os
-from pathlib import Path
 from typing import List
+from dotenv import load_dotenv
+
+# Carga las variables del archivo .env en el entorno local.
+load_dotenv()
 
 
 class Settings:
 
     APP_NAME: str = "Veterinaria Huellitas Backend"
     APP_VERSION: str = "1.0.0"
+
     DEBUG: bool = os.getenv("DEBUG", "True").lower() in ("true", "1", "yes")
 
     TIMEZONE: str = os.getenv("TIMEZONE", "America/Lima")
@@ -15,7 +18,10 @@ class Settings:
     HORARIO_APERTURA: str = os.getenv("HORARIO_APERTURA", "09:00")
     HORARIO_CIERRE: str = os.getenv("HORARIO_CIERRE", "21:00")
 
-    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "clave_super_secreta_veterinaria_huellitas_lp_2026")
+    JWT_SECRET_KEY: str = os.getenv(
+        "JWT_SECRET_KEY",
+        "clave-local-solo-para-desarrollo"
+    )
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION_HOURS: int = int(os.getenv("JWT_EXPIRATION_HOURS", "24"))
 
@@ -28,20 +34,42 @@ class Settings:
     @property
     def DATABASE_URL(self) -> str:
         env_url = os.getenv("DATABASE_URL")
+
         if env_url:
             return env_url
+
         if self.DB_PASSWORD:
-            return f"mysql+pymysql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}?charset=utf8mb4"
-        return f"mysql+pymysql://{self.DB_USER}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}?charset=utf8mb4"
+            return (
+                f"mysql+pymysql://{self.DB_USER}:{self.DB_PASSWORD}"
+                f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+                "?charset=utf8mb4"
+            )
+
+        return (
+            f"mysql+pymysql://{self.DB_USER}"
+            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+            "?charset=utf8mb4"
+        )
 
     SQLITE_URL: str = "sqlite:///./veterinaria_huellitas_dev.db"
 
     CORS_ORIGINS: List[str] = [
-        "http://localhost:4200",
-        "http://127.0.0.1:4200",
-        "http://localhost:3000",
-        "http://localhost:8080",
+        origin.strip()
+        for origin in os.getenv(
+            "CORS_ORIGINS",
+            "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000"
+        ).split(",")
+        if origin.strip()
     ]
+
 
 settings = Settings()
 
+# En producción no permitimos iniciar con la clave local predeterminada.
+if (
+    not settings.DEBUG
+    and settings.JWT_SECRET_KEY == "clave-local-solo-para-desarrollo"
+):
+    raise RuntimeError(
+        "Debes configurar JWT_SECRET_KEY en las variables de entorno."
+    )

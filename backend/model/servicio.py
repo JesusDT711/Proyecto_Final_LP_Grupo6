@@ -25,7 +25,7 @@ class Servicio(Base):
     descripcion = Column(String(500), nullable=True)
     precio = Column(Numeric(10, 2), nullable=False)
     duracion_minutos = Column(Integer, nullable=False)
-    activo = Column(Boolean, nullable=False, default=True)
+    activo = Column(Boolean, nullable=False, default=True, server_default="1")
     created_at = Column(DateTime, nullable=False, server_default=func.now())
 
     # Relaciones: Un servicio puede estar asociado a múltiples reservas históricas y futuras

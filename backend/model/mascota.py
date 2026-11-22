@@ -29,7 +29,6 @@ class Mascota(Base):
         BigInteger,
         ForeignKey("usuarios.id", ondelete="CASCADE", onupdate="CASCADE"),
         nullable=False,
-        index=True,
     )
     created_at = Column(DateTime, nullable=False, server_default=func.now())
 

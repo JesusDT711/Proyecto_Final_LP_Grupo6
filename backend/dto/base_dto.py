@@ -2,14 +2,14 @@
 from typing import Any, Dict
 
 try:
-    from pydantic import BaseModel, ConfigDict
+    from pydantic import BaseModel, ConfigDict # type: ignore
     PYDANTIC_AVAILABLE = True
 
-    class BaseDto(BaseModel):
+    class BaseDto(BaseModel): # type: ignore
         model_config = ConfigDict(
             populate_by_name=True,
             from_attributes=True,
-            extra="ignore",
+            extra="allow",
         )
 
         def to_dict(self) -> Dict[str, Any]:

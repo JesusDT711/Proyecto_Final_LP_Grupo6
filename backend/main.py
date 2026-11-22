@@ -21,7 +21,7 @@ from security.security_filter import SecurityFilter
 from security.user_details_service import UserDetailsService
 from service import AuthService, MascotaService, ReservaService, ServicioService
 
-# Servicios de ejemplo (solo se crean si la tabla está vacía). Edita nombres y precios a tu gusto.
+# Servicios de ejemplo (solo se crean si la tabla está vacía).
 SERVICIOS = [
     ("Consulta general", "Revisión completa de la salud de tu mascota.", 60, 30),
     ("Diagnóstico", "Análisis de laboratorio, rayos X y ecografías.", 120, 60),
@@ -69,7 +69,7 @@ def ctx(request: Request, db=Depends(get_db)):
     roles, usuarios, mascotas = RolRepository(db), UsuarioRepository(db), MascotaRepository(db)
     servicios, reservas = ServicioRepository(db), ReservaRepository(db)
     usuario = SecurityFilter(user_details_service=UserDetailsService(usuarios)).autenticar(request.headers.get("Authorization"))
-    # El README indica que listar servicios es público (la validación original pediría sesión)
+    # El README indica que listar servicios es público
     if not (request.method == "GET" and request.url.path.startswith("/api/servicios")):
         SecurityConfig.validar_acceso(request.url.path, request.method, usuario)
     rs = ReservaService(reservas, servicios, usuarios, mascotas)

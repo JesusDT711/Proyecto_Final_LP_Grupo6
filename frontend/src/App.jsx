@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
+import Admin from "./Admin";
 import "./App.css";
 
-const API = "http://localhost:8000/api"; // cambia el puerto si tu backend usa otro
+const API = "http://localhost:8000/api";
 const IMG = { hero: "/img/hero.png", gato: "/img/gato.png", perro: "/img/perro.png", ave: "/img/ave.png", servicios: "/img/servicios.png" };
 const mascotas = [["Gatos", IMG.gato], ["Perros", IMG.perro], ["Aves", IMG.ave]];
 // Datos fijos: el backend aún no tiene tabla de doctores
-const doctores = [["Dra. Nombre Apellido", "Veterinaria"], ["Dr. Nombre Apellido", "Cirujano"], ["Dr. Nombre Apellido", "Dentista"], ["Dra. Nombre Apellido", "Oncóloga"]]
+const doctores = [["Dra. Ester Mendez", "Veterinaria"], ["Dr. Martin Juarez", "Cirujano"], ["Dr. Luis Mesa", "Dentista"], ["Dra. Nataly Flores", "Oncóloga"]]
   .map(([n, r], i) => [n, r, `/img/doctor${i + 1}.png`]);
 // Horario del backend: lunes a sábado, 09:00 a 21:00 (el servicio debe terminar antes del cierre)
 const horas = Array.from({ length: 12 }, (_, i) => `${String(9 + i).padStart(2, "0")}:00`);
@@ -33,7 +34,9 @@ export default function App() {
 
   useEffect(() => { api("/servicios").then(setServicios).catch(() => setMsg("No se pudo conectar con el servidor")); }, []);
 
-  const cargarCitas = () => sesion && api("/reservas/mis-reservas", null, sesion.token).then(setCitas).catch(() => {});
+  const esAdmin = sesion?.rol === "ADMIN";
+  const recargar = () => api("/servicios").then(setServicios).catch(() => {});
+  const cargarCitas = () => sesion && !esAdmin && api("/reservas/mis-reservas", null, sesion.token).then(setCitas).catch(() => {});
   useEffect(() => { cargarCitas(); }, [sesion]);
   const cancelar = (id) => api(`/reservas/${id}/cancelar`, null, sesion.token, "PUT").then(cargarCitas).catch((err) => setMsg(err.message));
 
@@ -130,6 +133,8 @@ export default function App() {
               {registro ? "¿Ya tienes cuenta? Inicia sesión" : "¿No tienes cuenta? Regístrate"}
             </a>
           </form>
+        ) : esAdmin ? (
+          <Admin api={(ruta, body, metodo) => api(ruta, body, sesion.token, metodo)} servicios={servicios} recargar={recargar} />
         ) : (
           <form className="form" onSubmit={reservar}>
             <h2>Agenda una cita</h2>
@@ -150,7 +155,7 @@ export default function App() {
           </form>
         )}
 
-        {sesion && citas.length > 0 && (
+        {sesion && !esAdmin && citas.length > 0 && (
           <div className="lista mis">
             <h2>Mis citas</h2>
             {citas.map((c) => (
